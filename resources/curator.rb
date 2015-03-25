@@ -16,3 +16,8 @@ attribute :hour,          kind_of: String
 attribute :log_file,      kind_of: String
 attribute :user,          kind_of: String
 attribute :bin_dir,       kind_of: String
+attribute :version,       kind_of: String
+attribute :delete_indices_regex,       kind_of: String
+attribute :delete_indices_older_than,  kind_of: String
+attribute :delete_indices_time_unit,   kind_of: String
+attribute :delete_indices_timestring,  kind_of: String

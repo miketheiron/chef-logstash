@@ -18,11 +18,11 @@ def load_current_resource
   @log_file = new_resource.log_file || Logstash.get_attribute_or_default(node, @instance, 'curator_cron_log_file')
   @user = new_resource.user || Logstash.get_attribute_or_default(node, @instance, 'user')
   @bin_dir = new_resource.user || Logstash.get_attribute_or_default(node, @instance, 'curator_bin_dir')
-  @curator_version = new_resource.curator_version || Logstash.get_attribute_or_default(node, @instance, 'curator_version')
-  @curator_delete_indices_regex = new_resource.curator_delete_indices_regex || Logstash.get_attribute_or_default(node, @instance, 'curator_delete_indices_regex')
-  @curator_delete_indices_older_than = new_resource.curator_delete_indices_older_than || Logstash.get_attribute_or_default(node, @instance, 'curator_delete_indices_older_than')
-  @curator_delete_indices_time_unit = new_resource.curator_delete_indices_time_unit || Logstash.get_attribute_or_default(node, @instance, 'curator_delete_indices_time_unit')
-  @curator_delete_indices_timestring = new_resource.curator_delete_indices_timestring || Logstash.get_attribute_or_default(node, @instance, 'curator_delete_indices_timestring')
+  @version = new_resource.version || Logstash.get_attribute_or_default(node, @instance, 'curator_version')
+  @delete_indices_regex = new_resource.delete_indices_regex || Logstash.get_attribute_or_default(node, @instance, 'curator_delete_indices_regex')
+  @delete_indices_older_than = new_resource.delete_indices_older_than || Logstash.get_attribute_or_default(node, @instance, 'curator_delete_indices_older_than')
+  @delete_indices_time_unit = new_resource.delete_indices_time_unit || Logstash.get_attribute_or_default(node, @instance, 'curator_delete_indices_time_unit')
+  @delete_indices_timestring = new_resource.delete_indices_timestring || Logstash.get_attribute_or_default(node, @instance, 'curator_delete_indices_timestring')
 end
 
 action :create do
@@ -33,12 +33,12 @@ action :create do
   cur_minute = @minute
   cur_user = @user
   cur_bin_dir = @bin_dir
-  cur_version = @curator_version
 
-  curator_delete_indices_regex = @curator_delete_indices_regex
-  curator_delete_indices_older_than = @curator_delete_indices_older_than
-  curator_delete_indices_time_unit = @curator_delete_indices_time_unit
-  curator_delete_indices_timestring = @curator_delete_indices_timestring
+  cur_version = @version
+  cur_delete_indices_regex = @delete_indices_regex
+  cur_delete_indices_older_than = @delete_indices_older_than
+  cur_delete_indices_time_unit = @delete_indices_time_unit
+  cur_delete_indices_timestring = @delete_indices_timestring
 
   @run_context.include_recipe 'python::pip'
 
@@ -49,8 +49,8 @@ action :create do
   new_resource.updated_by_last_action(pi.updated_by_last_action?)
 
   server_ip = ::Logstash.service_ip(node, cur_instance, 'elasticsearch')
-  crs = cron "curator-#{cur_instance}" do
-    command "#{cur_bin_dir}/curator --host #{server_ip} delete indices --regex '#{curator_delete_indices_regex}' --older-than #{curator_delete_indices_older_than} --timeunit #{curator_delete_indices_time_unit} --timestring '#{curator_delete_indices_timestring}' &> #{cur_log_file}"
+  cr = cron "curator-#{cur_instance}" do
+    command "#{cur_bin_dir}/curator --host #{server_ip} delete indices --regex '#{cur_delete_indices_regex}' --older-than #{cur_delete_indices_older_than} --timeunit #{cur_delete_indices_time_unit} --timestring '#{cur_delete_indices_timestring}' &> #{cur_log_file}"
     user    cur_user
     minute  cur_minute
     hour    cur_hour
@@ -68,10 +68,11 @@ action :delete do
   cur_user = @user
   cur_bin_dir = @bin_dir
 
-  curator_delete_indices_regex = @curator_delete_indices_regex
-  curator_delete_indices_older_than = @curator_delete_indices_older_than
-  curator_delete_indices_time_unit = @curator_delete_indices_time_unit
-  curator_delete_indices_timestring = @curator_delete_indices_timestring
+  cur_version = @version
+  cur_delete_indices_regex = @delete_indices_regex
+  cur_delete_indices_older_than = @delete_indices_older_than
+  cur_delete_indices_time_unit = @delete_indices_time_unit
+  cur_delete_indices_timestring = @delete_indices_timestring
 
   @run_context.include_recipe 'python::pip'
 
@@ -81,7 +82,7 @@ action :delete do
   new_resource.updated_by_last_action(pi.updated_by_last_action?)
 
   cr = cron "curator-#{cur_instance}" do
-    command "#{cur_bin_dir}/curator --host #{server_ip} delete indices --regex '#{curator_delete_indices_regex}' --older-than #{curator_delete_indices_older_than} --timeunit #{curator_delete_indices_time_unit} --timestring '#{curator_delete_indices_timestring}' &> #{cur_log_file}"
+    command "#{cur_bin_dir}/curator --host #{server_ip} delete indices --regex '#{cur_delete_indices_regex}' --older-than #{cur_delete_indices_older_than} --timeunit #{cur_delete_indices_time_unit} --timestring '#{cur_delete_indices_timestring}' &> #{cur_log_file}"
     user    cur_user
     minute  cur_minute
     hour    cur_hour

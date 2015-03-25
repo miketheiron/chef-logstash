@@ -96,7 +96,7 @@ default['logstash']['instance_default']['curator_cron_log_file'] = '/dev/null'
 # Additional configuration for curator 3.0.x
 default['logstash']['instance_default']['curator_version'] = '3.0.1'
 default['logstash']['instance_default']['curator_delete_indices_regex'] = '^logstash-.*$'
-default['logstash']['instance_default']['curator_delete_indices_older_than'] = 8
+default['logstash']['instance_default']['curator_delete_indices_older_than'] = 31
 default['logstash']['instance_default']['curator_delete_indices_time_unit'] = 'days'
 default['logstash']['instance_default']['curator_delete_indices_timestring'] = '%Y.%m.%d'
 

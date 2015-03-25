@@ -50,7 +50,7 @@ action :create do
 
   server_ip = ::Logstash.service_ip(node, cur_instance, 'elasticsearch')
   cr = cron "curator-#{cur_instance}" do
-    command "#{cur_bin_dir}/curator --host #{server_ip} delete indices --regex '#{cur_delete_indices_regex}' --older-than #{cur_delete_indices_older_than} --timeunit #{cur_delete_indices_time_unit} --timestring '#{cur_delete_indices_timestring}' &> #{cur_log_file}"
+    command "#{cur_bin_dir}/curator --host #{server_ip} delete indices --regex '#{cur_delete_indices_regex}' --older-than #{cur_delete_indices_older_than} --time-unit #{cur_delete_indices_time_unit} --timestring '#{cur_delete_indices_timestring}' &> #{cur_log_file}"
     user    cur_user
     minute  cur_minute
     hour    cur_hour
@@ -82,7 +82,7 @@ action :delete do
   new_resource.updated_by_last_action(pi.updated_by_last_action?)
 
   cr = cron "curator-#{cur_instance}" do
-    command "#{cur_bin_dir}/curator --host #{server_ip} delete indices --regex '#{cur_delete_indices_regex}' --older-than #{cur_delete_indices_older_than} --timeunit #{cur_delete_indices_time_unit} --timestring '#{cur_delete_indices_timestring}' &> #{cur_log_file}"
+    command "#{cur_bin_dir}/curator --host #{server_ip} delete indices --regex '#{cur_delete_indices_regex}' --older-than #{cur_delete_indices_older_than} --time-unit #{cur_delete_indices_time_unit} --timestring '#{cur_delete_indices_timestring}' &> #{cur_log_file}"
     user    cur_user
     minute  cur_minute
     hour    cur_hour

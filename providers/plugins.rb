@@ -37,6 +37,18 @@ action :create do
   ls_instance_dir = @instance_dir
   ls_install_check = @install_check
 
+  remote_directory "#{ls_basedir}/#{ls_instance}/lib/logstash/inputs" do
+    source "inputs"
+    files_owner ls_user
+    files_group ls_group
+    files_mode 0664
+    owner ls_user
+    group ls_group
+    mode 0775
+    action :create
+    notifies    :restart, "logstash_service[#{ls_instance}]"
+  end
+
   case @install_type
   when 'native'
     ex = execute "bin/plugin install #{ls_name}" do
